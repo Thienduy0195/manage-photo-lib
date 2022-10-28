@@ -1,0 +1,52 @@
+version: "3.8"
+services:
+  # PHP Service
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ben_mpl_back_end
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    networks:
+      - ben-mpl-backend
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    container_name: ben_mpl_nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8900:443"
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - ben-mpl-backend
+  #MySQL Service
+  db:
+    image: 'mysql:8.0'
+    container_name: ben_mpl_mysql
+    command: ['--default-authentication-plugin=mysql_native_password', '--lower_case_table_names=2']
+    restart: always
+    ports:
+      - '44333:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '123123'
+      MYSQL_DATABASE: 'ben_mpl_db'
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: '123123'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - ./db:/var/lib/mysql
+      - ./docker/mysql/mysql.cnf:/etc/mysql/mysql.cnf
+    networks:
+      - ben-mpl-backend
+#Docker Networks
+networks:
+  ben-mpl-backend:
+    driver: bridge

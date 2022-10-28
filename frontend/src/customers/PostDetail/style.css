@@ -1,0 +1,25 @@
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+}
+
+.img-responsive {
+  width: 800px;
+  height: 600px;
+}
+
+@media screen and (max-width: 768px) {
+  .img-responsive {
+    width: 600px;
+    height: 400px;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .img-responsive {
+    width: 400px;
+    height: 300px;
+  }
+}
